@@ -1,6 +1,6 @@
 import { getNativeStartupTiming } from '../lib/tauri/startupTiming';
 
-const PREFIX = 'liliamark:';
+const PREFIX = 'lilia-mark:';
 
 const WALL_MARKS = ['script-start', 'ui-ready', 'session-done'] as const;
 type WallMark = (typeof WALL_MARKS)[number];

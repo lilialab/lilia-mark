@@ -2,7 +2,7 @@ import { getVersion } from '@tauri-apps/api/app';
 import { errorMessage } from '../utils/errorMessage';
 import { isNewerSemver } from '../utils/semver';
 
-export const GITHUB_REPO = 'lilialab/liliamark';
+export const GITHUB_REPO = 'lilialab/lilia-mark';
 
 /** 浏览器打开的 Latest Release 页 */
 export const RELEASES_LATEST_URL = `https://github.com/${GITHUB_REPO}/releases/latest`;
