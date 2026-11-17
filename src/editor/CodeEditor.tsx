@@ -1,4 +1,5 @@
-import { Compartment, Transaction } from '@codemirror/state';
+import { indentUnit } from '@codemirror/language';
+import { Compartment, EditorState, type Extension, Transaction } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,9 +11,13 @@ import { readEditorCaretStatus } from '../utils/editorStatus';
 import { sameFilePath } from '../utils/path';
 import { EditorBusyOverlay } from './EditorBusyOverlay';
 import { baseExtensions } from './editorExtensions';
-import { indentExtensions } from './indent';
 import { loadLanguageExtension } from './languageRegistry';
 import './codeEditor.css';
+
+/** tabSize + 空格 indentUnit（size 由设置保证为 2 / 4） */
+function indentExtensions(size: number): Extension {
+  return [EditorState.tabSize.of(size), indentUnit.of(' '.repeat(size))];
+}
 
 type CodeEditorProps = {
   /** 实例标识（如 tab id），回调一律带回 */

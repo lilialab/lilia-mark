@@ -1,13 +1,19 @@
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+import { catppuccinMacchiato } from '@catppuccin/codemirror';
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { foldKeymap, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { search, searchKeymap } from '@codemirror/search';
-import type { Extension } from '@codemirror/state';
-import { highlightSpecialChars, keymap, lineNumbers } from '@codemirror/view';
+import { EditorState, type Extension } from '@codemirror/state';
+import {
+  crosshairCursor,
+  drawSelection,
+  highlightSpecialChars,
+  keymap,
+  lineNumbers,
+  rectangularSelection,
+} from '@codemirror/view';
 import { tags } from '@lezer/highlight';
-import { catppuccinEditorTheme } from '../theme/flavor';
 import { highlightActiveLineExclusive } from './activeLineHighlight';
 import { editorFoldGutter } from './foldGutter';
-import { indentKeymap } from './indent';
 import { markdownBoldKeymap } from './markdown/markdownBold';
 import { markdownTaskKeymap } from './markdown/markdownTask';
 import { createVscodeSearchPanel } from './search/searchPanel';
@@ -36,12 +42,16 @@ export const baseExtensions: Extension[] = [
   editorFoldGutter,
   highlightSpecialChars(),
   history(),
-  catppuccinEditorTheme(),
+  drawSelection(),
+  EditorState.allowMultipleSelections.of(true),
+  rectangularSelection(),
+  crosshairCursor(),
+  catppuccinMacchiato,
   markdownHighlight,
   highlightActiveLineExclusive(),
   search({ top: true, createPanel: createVscodeSearchPanel }),
   keymap.of([
-    ...indentKeymap,
+    indentWithTab,
     ...markdownBoldKeymap,
     ...markdownTaskKeymap,
     ...searchKeymap,

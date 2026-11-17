@@ -5,7 +5,8 @@
   "app": {
     "windows": [
       {
-        "title": "LiliaMark Dev"
+        "title": "LiliaMark Dev",
+        "theme": "Dark"
       }
     ]
   }

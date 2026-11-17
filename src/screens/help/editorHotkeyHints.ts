@@ -1,7 +1,7 @@
 /**
  * 快捷键说明结构（只读）。
- * 应用级对齐 `useEditorHotkeys` / `markdownBoldKeymap` / `markdownTaskKeymap` / `indentKeymap`；
- * 编辑器级摘自 CodeMirror `defaultKeymap` / `historyKeymap` / `searchKeymap`（非整表）。
+ * 应用级对齐 `useEditorHotkeys` / `markdownBoldKeymap` / `markdownTaskKeymap`；
+ * 编辑器级摘自 CodeMirror `indentWithTab` / `defaultKeymap` / `historyKeymap` / `searchKeymap`（非整表）。
  * 文案键在 i18n `hotkeys.*`。
  */
 
