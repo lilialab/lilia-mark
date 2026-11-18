@@ -2119,7 +2119,7 @@ dependencies = [
 
 [[package]]
 name = "lilia-mark"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "dprint-plugin-markdown",
  "jsonxf",

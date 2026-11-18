@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+## [0.2.7] — 2026-11-18
+
+### Changed
+
+- 项目名 / 仓库标识改为 `lilia-mark`（展示名仍为 LiliaMark）
+- 编辑器：自绘选区、多光标与列选、官方 Tab 整行缩进
+- 主题固定 Catppuccin Macchiato，去掉可切换 flavor
+- README 默认中文；macOS 未签名说明补充 `xattr` 去除隔离属性
+
+### Notes
+
+- 版本号同步为 `0.2.7`（`package.json` / Tauri / Cargo）
+
 ## [0.2.6] — 2026-11-11
 
 ### Fixed
