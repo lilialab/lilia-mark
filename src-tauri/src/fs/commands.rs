@@ -1,11 +1,13 @@
+//! 文件读写、拖入分类与监听同步 IPC。
+
 use std::fs;
 use std::path::PathBuf;
 
 use serde::Serialize;
 use tauri::ipc::{InvokeBody, Request, Response};
-use tauri::State;
+use tauri::{AppHandle, State};
 
-use crate::file_watch::FileWatchState;
+use crate::fs::watch::{self, FileWatchState};
 use crate::ipc_bytes::decode_path_content;
 
 #[derive(Serialize)]
@@ -73,4 +75,14 @@ pub(crate) async fn write_text_file(
     .and_then(|result| result);
     watch.end_self_write(&path_for_watch);
     write_result
+}
+
+/// 同步当前应监听的文件列表（开 tab 加入、关 tab 移除）。
+#[tauri::command]
+pub(crate) fn sync_watched_files(
+    app: AppHandle,
+    state: State<'_, FileWatchState>,
+    paths: Vec<String>,
+) -> Result<(), String> {
+    watch::sync(&app, &state, paths)
 }

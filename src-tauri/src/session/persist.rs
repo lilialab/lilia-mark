@@ -1,3 +1,5 @@
+//! 会话持久化：`session.json` 读写。
+
 use std::fs;
 use std::path::PathBuf;
 
@@ -28,9 +30,7 @@ fn parse_session_json(text: &str) -> EditorSession {
     serde_json::from_str(text).unwrap_or_default()
 }
 
-/// 从应用数据目录读取编辑器会话；无文件或坏 JSON 时返回空会话。
-#[tauri::command]
-pub(crate) fn load_editor_session(app: AppHandle) -> Result<EditorSession, String> {
+pub(crate) fn read(app: AppHandle) -> Result<EditorSession, String> {
     let path = session_path(&app)?;
     if !path.is_file() {
         return Ok(EditorSession::default());
@@ -42,9 +42,7 @@ pub(crate) fn load_editor_session(app: AppHandle) -> Result<EditorSession, Strin
     }
 }
 
-/// 将编辑器会话写入应用数据目录。
-#[tauri::command]
-pub(crate) fn save_editor_session(app: AppHandle, session: EditorSession) -> Result<(), String> {
+pub(crate) fn write(app: AppHandle, session: EditorSession) -> Result<(), String> {
     let path = session_path(&app)?;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|error| error.to_string())?;

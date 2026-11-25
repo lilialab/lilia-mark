@@ -1,4 +1,6 @@
-use crate::format_doc::TextChange;
+//! 前后端 Raw IPC 帧编解码（路径正文、格式化请求与 diff）。
+
+use crate::format::doc::TextChange;
 
 fn read_u32(buf: &[u8], pos: &mut usize) -> Result<u32, String> {
     let end = pos

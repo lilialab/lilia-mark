@@ -1,114 +1,61 @@
-mod commands;
-mod file_watch;
-mod format_doc;
+//! LiliaMark 桌面端：命令注册与文件打开生命周期。
+
+mod format;
+mod fs;
 mod ipc_bytes;
-mod navigation_guard;
-mod open_file;
-mod startup_timing;
+mod session;
+mod settings;
+mod shell;
 
-use tauri::Manager;
-
-use commands::format::format_document_text;
-use commands::fs::{classify_drop_paths, read_text_file, write_text_file};
-use commands::launch::take_pending_open_path;
-use commands::session::{load_editor_session, save_editor_session};
-use commands::settings::{default_app_settings, load_app_settings, save_app_settings};
-use file_watch::{sync_watched_files, FileWatchState};
-use open_file::{PendingOpenPath, open_path_in_running_app, paths_from_args};
-#[cfg(any(windows, target_os = "linux"))]
-use open_file::remember_open_path;
-use startup_timing::{get_native_startup_timing, mark_window_visible, StartupTiming};
-
-/// 屏蔽 WebView 浏览器默认快捷键（Ctrl+P 等在 Win 上不会进到 JS）。
-fn prevent_default_plugin() -> tauri::plugin::TauriPlugin<tauri::Wry> {
-    use tauri_plugin_prevent_default::Flags;
-
-    #[cfg(debug_assertions)]
-    let flags = Flags::keyboard().difference(Flags::DEV_TOOLS);
-    #[cfg(not(debug_assertions))]
-    let flags = Flags::keyboard();
-
-    let builder = tauri_plugin_prevent_default::Builder::new().with_flags(flags);
-
-    #[cfg(windows)]
-    let builder = builder.platform(
-        tauri_plugin_prevent_default::PlatformOptions::new().browser_accelerator_keys(false),
-    );
-
-    builder.build()
-}
+use format::format_document_text;
+use fs::{
+    classify_drop_paths, read_text_file, sync_watched_files, write_text_file, FileWatchState,
+};
+use session::{load_editor_session, save_editor_session};
+use settings::{default_app_settings, load_app_settings, save_app_settings};
+use shell::{
+    get_native_startup_timing, take_pending_open_path, PendingOpenPath, StartupTiming,
+};
 
 /// 启动 Tauri：单实例、文件关联打开、注册读写命令。
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let startup = StartupTiming::new();
     let mut builder = tauri::Builder::default();
 
     #[cfg(desktop)]
     {
-        builder = builder
-            .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
-                if let Some(path) = paths_from_args(args).into_iter().next() {
-                    open_path_in_running_app(app, path);
-                    return;
-                }
-
-                if let Some(window) = app.get_webview_window("main") {
-                    let _ = window.set_focus();
-                }
-            }))
-            .plugin(tauri_plugin_window_state::Builder::default().build());
+        builder = shell::plugins::register_desktop(builder);
     }
 
     builder
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
-        .plugin(prevent_default_plugin())
-        .plugin(navigation_guard::init())
-        .manage(startup)
+        .plugin(shell::plugins::prevent_default())
+        .plugin(shell::navigation_guard::init())
+        .manage(StartupTiming::new())
         .manage(PendingOpenPath::new())
         .manage(FileWatchState::new())
-        .setup(|app| {
-            #[cfg(any(windows, target_os = "linux"))]
-            {
-                if let Some(path) = paths_from_args(std::env::args()).into_iter().next() {
-                    remember_open_path(app.handle(), path);
-                }
-            }
-            #[cfg(not(any(windows, target_os = "linux")))]
-            let _ = app;
-            Ok(())
-        })
+        .setup(shell::startup::setup)
         .invoke_handler(tauri::generate_handler![
+            // shell
             take_pending_open_path,
+            get_native_startup_timing,
+            // fs
             classify_drop_paths,
             read_text_file,
             write_text_file,
             sync_watched_files,
+            // session
             load_editor_session,
             save_editor_session,
+            // settings
             load_app_settings,
             save_app_settings,
             default_app_settings,
-            get_native_startup_timing,
+            // format
             format_document_text,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
-        .run(|app, event| {
-            if let tauri::RunEvent::Ready = &event {
-                mark_window_visible(app);
-            }
-
-            #[cfg(any(target_os = "macos", target_os = "ios"))]
-            if let tauri::RunEvent::Opened { urls } = event {
-                if let Some(path) = urls
-                    .into_iter()
-                    .filter_map(|url| url.to_file_path().ok())
-                    .next()
-                {
-                    open_path_in_running_app(app, path);
-                }
-            }
-        });
+        .run(shell::startup::on_run_event);
 }

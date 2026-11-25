@@ -1,3 +1,5 @@
+//! WebView 导航白名单：只留应用自身页面，外链交给系统浏览器。
+
 use tauri::{
     plugin::{Builder, TauriPlugin},
     Runtime,

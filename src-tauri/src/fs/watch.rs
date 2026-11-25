@@ -1,3 +1,5 @@
+//! 已打开文件的磁盘变更监听（防抖、自写抑制）。
+
 use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -8,7 +10,7 @@ use notify_debouncer_full::notify::event::ModifyKind;
 use notify_debouncer_full::notify::{EventKind, RecommendedWatcher, RecursiveMode};
 use notify_debouncer_full::{new_debouncer, DebounceEventResult, Debouncer, RecommendedCache};
 use serde::Serialize;
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter};
 
 const DEBOUNCE: Duration = Duration::from_millis(200);
 
@@ -220,13 +222,12 @@ fn ensure_debouncer(app: &AppHandle, state: &FileWatchState) -> Result<(), Strin
 }
 
 /// 同步当前应监听的文件列表（开 tab 加入、关 tab 移除）。
-#[tauri::command]
-pub(crate) fn sync_watched_files(
-    app: AppHandle,
-    state: State<'_, FileWatchState>,
+pub(crate) fn sync(
+    app: &AppHandle,
+    state: &FileWatchState,
     paths: Vec<String>,
 ) -> Result<(), String> {
-    ensure_debouncer(&app, &state)?;
+    ensure_debouncer(app, state)?;
 
     let next_files: HashSet<PathBuf> = paths
         .into_iter()

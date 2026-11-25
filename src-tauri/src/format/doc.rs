@@ -1,3 +1,5 @@
+//! 文档 format + 行级 diff（JSON / Markdown）；无 I/O。
+
 use dprint_plugin_markdown::configuration::{ConfigurationBuilder, TextWrap};
 use dprint_plugin_markdown::format_text as format_markdown_text;
 use similar::{capture_diff_slices, Algorithm, DiffOp};

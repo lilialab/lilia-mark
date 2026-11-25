@@ -1,3 +1,5 @@
+//! 启动参数 / 二次实例打开文件：待取路径与前台通知。
+
 use std::path::PathBuf;
 use std::sync::Mutex;
 

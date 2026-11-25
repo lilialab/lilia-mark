@@ -1,8 +1,10 @@
+//! 冷启动原生侧时间戳（进程启动 / 窗口可见）。
+
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::Serialize;
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, Manager};
 
 /// 冷启动原生侧时间戳（unix ms）；供前端拼不交叉的四段耗时。
 pub struct StartupTiming {
@@ -39,7 +41,7 @@ impl StartupTiming {
         }
     }
 
-    fn snapshot(&self) -> NativeStartupTiming {
+    pub(crate) fn snapshot(&self) -> NativeStartupTiming {
         NativeStartupTiming {
             process_started_ms: self.process_started_ms,
             window_visible_ms: *self
@@ -55,11 +57,4 @@ pub fn mark_window_visible(app: &AppHandle) {
     if let Some(state) = app.try_state::<StartupTiming>() {
         state.mark_window_visible();
     }
-}
-
-#[tauri::command]
-pub(crate) fn get_native_startup_timing(
-    state: State<'_, StartupTiming>,
-) -> NativeStartupTiming {
-    state.snapshot()
 }

@@ -1,3 +1,5 @@
+//! 设置持久化：`settings.json` 读写与缺省合并。
+
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -60,8 +62,7 @@ fn write_settings_file(path: &Path, settings: &AppSettings) -> Result<(), String
 }
 
 /// 读取设置；合并缺省后始终写回完整文件。
-#[tauri::command]
-pub(crate) fn load_app_settings(app: AppHandle) -> Result<AppSettings, String> {
+pub(crate) fn load(app: AppHandle) -> Result<AppSettings, String> {
     let path = settings_path(&app)?;
     let settings = match fs::read_to_string(&path) {
         Ok(text) => parse_settings_json(&text).unwrap_or_default(),
@@ -72,14 +73,12 @@ pub(crate) fn load_app_settings(app: AppHandle) -> Result<AppSettings, String> {
 }
 
 /// 将设置写入应用配置目录。
-#[tauri::command]
-pub(crate) fn save_app_settings(app: AppHandle, settings: AppSettings) -> Result<(), String> {
+pub(crate) fn save(app: AppHandle, settings: AppSettings) -> Result<(), String> {
     write_settings_file(&settings_path(&app)?, &settings)
 }
 
-/// 返回内置默认设置（`default_settings.json`），不读写磁盘。
-#[tauri::command]
-pub(crate) fn default_app_settings() -> AppSettings {
+/// 内置默认设置（`default_settings.json`），不读写磁盘。
+pub(crate) fn defaults() -> AppSettings {
     AppSettings::default()
 }
 

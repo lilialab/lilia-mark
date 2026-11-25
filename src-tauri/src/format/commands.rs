@@ -1,6 +1,8 @@
+//! 格式化文档 IPC。
+
 use tauri::ipc::{InvokeBody, Request, Response};
 
-use crate::format_doc::{format_and_diff, format_kind_for_path};
+use crate::format::doc::{format_and_diff, format_kind_for_path};
 use crate::ipc_bytes::{decode_format_request, encode_text_changes};
 
 /// 整份正文格式化 + diff。请求/响应均为 Raw 字节。阻塞池执行，避免卡住 UI 线程。
