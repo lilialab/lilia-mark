@@ -1,0 +1,55 @@
+@if (editorStore.activeTab(); as tab) {
+  @if (editorStore.caretStatus(); as caret) {
+    @if (languageName(); as languageName) {
+      <footer
+        class="flex min-h-6 shrink-0 items-center gap-3 overflow-hidden bg-(--app-bg-raised) px-3 font-mono text-xs text-(--app-muted)"
+        [attr.aria-label]="'status.aria' | transloco"
+      >
+        <div class="flex min-w-0 items-center gap-3">
+          @if (tab.path === null) {
+            <button
+              type="button"
+              class="min-w-0 cursor-pointer truncate rounded-sm px-0.5 -mx-0.5 hover:bg-(--app-surface-hover) hover:text-(--app-fg)"
+              [attr.aria-label]="'status.changeFileType' | transloco"
+              (click)="openExtModal()"
+            >
+              @if (languageName === 'Plain Text') {
+                {{ 'status.plainText' | transloco }}
+              } @else {
+                {{ languageName }}
+              }
+            </button>
+          } @else {
+            <span class="truncate">
+              @if (languageName === 'Plain Text') {
+                {{ 'status.plainText' | transloco }}
+              } @else {
+                {{ languageName }}
+              }
+            </span>
+          }
+          <span class="shrink-0">
+            {{ 'status.indentSpaces' | transloco: { size: indentSize() } }}
+          </span>
+        </div>
+        <div class="ml-auto flex shrink-0 items-center gap-3">
+          @if (caret.selectedChars > 0) {
+            <span>{{ 'status.selected' | transloco: { count: caret.selectedChars } }}</span>
+          }
+          <span>{{ 'status.chars' | transloco: { count: caret.chars } }}</span>
+          <span>{{ 'status.lines' | transloco: { count: caret.lines } }}</span>
+          <span>
+            {{ 'status.lineCol' | transloco: { line: caret.line, col: caret.col } }}
+          </span>
+        </div>
+      </footer>
+
+      @if (tab.path === null) {
+        <app-untitled-ext-modal
+          [open]="extModalOpen()"
+          (closed)="extModalOpen.set(false)"
+        />
+      }
+    }
+  }
+}

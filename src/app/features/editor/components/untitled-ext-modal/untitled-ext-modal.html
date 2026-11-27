@@ -1,0 +1,72 @@
+<app-modal
+  [open]="open()"
+  [title]="'editor.untitledExt' | transloco"
+  (closed)="closed.emit()"
+>
+  <label class="mb-3 block">
+    <span class="mb-1 block text-xs text-(--app-muted)">
+      {{ 'editor.untitledExtFilter' | transloco }}
+    </span>
+    <input
+      type="text"
+      spellcheck="false"
+      autocomplete="off"
+      class="w-full rounded border border-(--app-border) bg-(--app-bg) px-3 py-2 font-mono text-sm text-(--app-fg) outline-none focus:border-(--app-link)"
+      [ngModel]="query()"
+      (ngModelChange)="query.set($event)"
+      (keydown.enter)="$event.preventDefault(); addExt()"
+    />
+  </label>
+
+  @if (!showChipRow()) {
+    <p class="text-sm text-(--app-muted)">{{ 'editor.untitledExtEmpty' | transloco }}</p>
+  } @else {
+    <div class="flex flex-wrap gap-2">
+      @for (ext of filtered(); track ext) {
+        <div
+          class="group relative inline-flex items-center rounded-md border"
+          [class.border-(--app-link)]="ext === currentExt()"
+          [class.bg-(--app-surface)]="ext === currentExt()"
+          [class.border-(--app-border)]="ext !== currentExt()"
+          [class.bg-(--app-bg)]="ext !== currentExt()"
+        >
+          <button
+            type="button"
+            class="px-2.5 py-1 font-mono text-sm text-(--app-fg)"
+            (click)="selectExt(ext)"
+          >
+            .{{ ext }}
+          </button>
+          <button
+            type="button"
+            class="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-sm border border-(--app-border) bg-(--app-bg-raised) text-(--app-muted) opacity-0 group-hover:opacity-100 hover:text-(--app-fg) focus-visible:opacity-100"
+            [attr.aria-label]="'editor.untitledExtRemove' | transloco: { ext }"
+            (click)="removeExt(ext)"
+          >
+            <svg lucideX [size]="10" [strokeWidth]="2" aria-hidden="true"></svg>
+          </button>
+        </div>
+      }
+      @if (canAdd() && normalizedQuery(); as addExtName) {
+        <button
+          type="button"
+          class="rounded-md border border-dashed border-(--app-border) px-2.5 py-1 font-mono text-sm text-(--app-muted) hover:border-(--app-link) hover:text-(--app-fg)"
+          [attr.aria-label]="'editor.untitledExtAdd' | transloco: { ext: addExtName }"
+          (click)="addExt()"
+        >
+          + .{{ addExtName }}
+        </button>
+      }
+    </div>
+  }
+
+  <button
+    appButton
+    variant="ghost"
+    extraClass="mt-4 px-0 text-xs text-(--app-muted) hover:bg-transparent hover:text-(--app-fg)"
+    (click)="resetExtList()"
+  >
+    {{ 'editor.untitledExtReset' | transloco }}
+  </button>
+
+</app-modal>

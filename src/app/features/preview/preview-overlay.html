@@ -1,0 +1,36 @@
+@if (mounted()) {
+  <div
+    class="preview-overlay-shell absolute inset-0 z-20 flex flex-col overflow-hidden bg-(--app-bg)"
+    [class.pointer-events-none]="!open()"
+    [attr.data-open]="open() ? 'true' : 'false'"
+    [attr.aria-hidden]="!open()"
+    [attr.aria-label]="'preview.aria' | transloco"
+  >
+    <div
+      class="preview-overlay-motion flex min-h-0 flex-1 flex-col"
+      [attr.data-open]="open() ? 'true' : 'false'"
+    >
+      <div class="h-1 shrink-0 bg-(--ctp-mauve)" aria-hidden="true"></div>
+      <div class="min-h-0 flex-1 overflow-auto">
+        @if (showMarkdown()) {
+          <app-markdown-preview [source]="source()" />
+        } @else if (showHtmlOpen()) {
+          <div class="flex flex-col items-start gap-3 p-6">
+            <p class="text-sm text-(--app-fg)">{{ 'preview.htmlNoInline' | transloco }}</p>
+            <p class="text-sm text-(--app-muted)">{{ 'preview.htmlOpenHint' | transloco }}</p>
+            <button
+              appButton
+              [tabFocusable]="true"
+              [disabled]="opening()"
+              (click)="onOpenInBrowser()"
+            >
+              {{ (opening() ? 'preview.opening' : 'preview.openInBrowser') | transloco }}
+            </button>
+          </div>
+        } @else {
+          <p class="p-4 text-sm text-(--app-muted)">{{ 'preview.unsupported' | transloco }}</p>
+        }
+      </div>
+    </div>
+  </div>
+}

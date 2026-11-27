@@ -1,0 +1,114 @@
+<app-modal
+  [open]="open()"
+  [title]="'settings.title' | transloco"
+  (closed)="closed.emit()"
+>
+  @if (draft(); as draft) {
+    <app-settings-section
+      [divided]="false"
+      [title]="'settings.fonts' | transloco"
+      [hint]="'settings.fontsHint' | transloco: { min: minFontSize, max: maxFontSize }"
+    >
+      <label class="mb-4 block">
+        <span class="mb-1 block text-sm text-(--app-fg)">{{ 'settings.fontFamily' | transloco }}</span>
+        <input
+          type="text"
+          [class]="fieldClass"
+          [ngModel]="draft.fontFamily"
+          (ngModelChange)="patchDraft({ fontFamily: $event })"
+          [disabled]="saving()"
+        />
+      </label>
+
+      <label class="mb-4 block">
+        <span class="mb-1 block text-sm text-(--app-fg)">{{ 'settings.fontSize' | transloco }}</span>
+        <input
+          type="number"
+          inputMode="numeric"
+          [min]="minFontSize"
+          [max]="maxFontSize"
+          step="1"
+          [class]="fieldClass"
+          [ngModel]="draft.fontSize"
+          (ngModelChange)="onFontSizeChange($event)"
+          [disabled]="saving()"
+        />
+      </label>
+    </app-settings-section>
+
+    <app-settings-section
+      [title]="'settings.indentSize' | transloco"
+      [hint]="'settings.indentSizeHint' | transloco"
+    >
+      <fieldset class="flex flex-col gap-2" [disabled]="saving()">
+        @for (size of indentSizes; track size) {
+          <label class="flex items-center gap-2 text-sm text-(--app-fg)">
+            <input
+              type="radio"
+              name="indentSize"
+              [checked]="draft.indentSize === size"
+              (change)="patchDraft({ indentSize: size })"
+            />
+            {{ 'settings.indentSizeOption' | transloco: { size } }}
+          </label>
+        }
+      </fieldset>
+    </app-settings-section>
+
+    <app-settings-section>
+      <label class="flex items-center gap-2 text-sm text-(--app-fg)">
+        <input
+          type="checkbox"
+          [ngModel]="draft.formatOnSave"
+          (ngModelChange)="patchDraft({ formatOnSave: $event })"
+          [disabled]="saving()"
+        />
+        {{ 'settings.formatOnSave' | transloco }}
+      </label>
+      <p class="mt-2 text-xs text-(--app-muted)">{{ 'settings.formatOnSaveHint' | transloco }}</p>
+      <label class="mt-3 flex items-center gap-2 text-sm text-(--app-fg)">
+        <input
+          type="checkbox"
+          [ngModel]="draft.saveOnBlur"
+          (ngModelChange)="patchDraft({ saveOnBlur: $event })"
+          [disabled]="saving()"
+        />
+        {{ 'settings.saveOnBlur' | transloco }}
+      </label>
+      <p class="mt-2 text-xs text-(--app-muted)">{{ 'settings.saveOnBlurHint' | transloco }}</p>
+    </app-settings-section>
+
+    <app-settings-section [title]="'settings.language' | transloco">
+      <fieldset class="flex flex-col gap-2" [disabled]="saving()">
+        @for (option of localeOptions; track option.value) {
+          <label class="flex items-center gap-2 text-sm text-(--app-fg)">
+            <input
+              type="radio"
+              name="locale"
+              [checked]="draft.locale === option.value"
+              (change)="patchDraft({ locale: option.value })"
+            />
+            {{ option.labelKey | transloco }}
+          </label>
+        }
+      </fieldset>
+    </app-settings-section>
+  }
+
+  @if (version(); as ver) {
+    <p class="text-center text-xs text-(--app-muted)">
+      {{ 'settings.version' | transloco: { version: ver } }}
+    </p>
+  }
+
+  <div appModalFooter class="flex justify-end">
+    <button
+      appButton
+      [tabFocusable]="true"
+      [disabled]="saving() || draft() === null"
+      (click)="save()"
+    >
+      {{ 'settings.save' | transloco }}
+    </button>
+  </div>
+</app-modal>

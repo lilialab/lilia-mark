@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "./theme/app.css";
+
+@theme {
+  --font-sans: "Segoe UI", "PingFang SC", "Noto Sans SC", ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+@layer base {
+  html,
+  body {
+    @apply m-0 h-full min-h-full;
+  }
+
+  body {
+    @apply overflow-hidden antialiased;
+    background: var(--app-bg);
+    color: var(--app-fg);
+    font-family: var(--font-sans);
+  }
+
+  app-root {
+    @apply block h-full;
+  }
+
+  /*
+   * 滚动条：只用 ::-webkit-scrollbar*（Tauri WebView 均支持）。
+   * 不设 scrollbar-width: thin —— Mac 上会逼成系统 overlay，悬停变白条且不吃主题色。
+   */
+  * {
+    --scrollbar-thumb: var(--ctp-surface2);
+    --scrollbar-thumb-hover: var(--ctp-overlay0);
+    --scrollbar-track: transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+}

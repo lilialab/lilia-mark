@@ -60,9 +60,9 @@ Also:
 
 - `pnpm format` — dprint
 - `pnpm lint` — ESLint
-- `pnpm test:run` — Vitest
+- `pnpm test` — Node test runner (tsx)
 
-Stack: Tauri 2 · Vite · React · TypeScript · CodeMirror 6 · markdown-it. Project conventions live in [`AGENTS.md`](AGENTS.md) (Chinese).
+Stack: Tauri 2 · Angular · TypeScript · CodeMirror 6 · markdown-it. Project conventions live in [`AGENTS.md`](AGENTS.md) (Chinese).
 
 ## License
 

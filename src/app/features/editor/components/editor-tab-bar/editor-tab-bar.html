@@ -1,0 +1,19 @@
+<div
+  class="editor-tab-list flex min-w-0 flex-1 items-stretch overflow-x-auto"
+  role="tablist"
+  [class.is-settling]="settling()"
+  [attr.aria-label]="'editor.ariaTabList' | transloco"
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="drop($event)"
+>
+  @for (tab of items(); track tab.id) {
+    <app-editor-tab-item
+      cdkDrag
+      cdkDragLockAxis="x"
+      [tab]="tab"
+      (closeRequest)="closeTab.emit($event)"
+    />
+  }
+</div>
+<ng-content />

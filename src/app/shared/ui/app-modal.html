@@ -1,0 +1,43 @@
+@if (open()) {
+  <div
+    role="dialog"
+    aria-modal="true"
+    [class]="
+      'fixed inset-0 z-30 flex items-center justify-center bg-(--app-overlay-scrim) p-4 ' +
+      overlayClass()
+    "
+  >
+    <div
+      [class]="
+        'relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-md border border-(--app-border) bg-(--app-bg-raised) shadow-lg ' +
+        panelClass()
+      "
+    >
+      <div
+        class="relative flex min-h-10 shrink-0 items-center border-b border-(--app-border) px-5 py-2.5 pr-11"
+      >
+        <h2 class="text-base font-medium text-(--app-fg)">{{ title() }}</h2>
+        <button
+          appButton
+          variant="ghost"
+          [tabFocusable]="true"
+          extraClass="absolute top-1/2 right-2.5 flex size-7 -translate-y-1/2 items-center justify-center"
+          [attr.aria-label]="closeLabel() ?? ('dialog.close' | transloco)"
+          (click)="closed.emit()"
+        >
+          <svg lucideX [size]="16" [strokeWidth]="2" aria-hidden="true"></svg>
+        </button>
+      </div>
+
+      <div class="min-h-0 flex-1 overflow-y-auto px-5 pt-4 pb-4">
+        <ng-content />
+      </div>
+
+      <div
+        class="shrink-0 border-t border-(--app-border) bg-(--app-bg-raised) px-5 py-3 empty:hidden"
+      >
+        <ng-content select="[appModalFooter]" />
+      </div>
+    </div>
+  </div>
+}

@@ -5,7 +5,8 @@
   "newLineKind": "lf",
   "typescript": {
     "quoteStyle": "preferSingle",
-    "jsx.quoteStyle": "preferDouble"
+    "module.sortImportDeclarations": "maintain",
+    "module.sortExportDeclarations": "maintain"
   },
   "json": {
     "trailingCommas": "never"
@@ -13,7 +14,11 @@
   "excludes": [
     "**/node_modules",
     "**/*.md",
-    "pnpm-lock.yaml"
+    "pnpm-lock.yaml",
+    "src-tauri/target",
+    "dist",
+    ".angular",
+    "out-tsc"
   ],
   "plugins": [
     "./node_modules/@dprint/typescript/plugin.wasm",

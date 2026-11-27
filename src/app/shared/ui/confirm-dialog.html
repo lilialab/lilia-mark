@@ -1,0 +1,24 @@
+<app-modal
+  [open]="open()"
+  [title]="title() ?? ('dialog.title' | transloco)"
+  [closeLabel]="closeLabel()"
+  panelClass="max-w-sm"
+  overlayClass="z-40"
+  (closed)="cancelled.emit()"
+>
+  <p class="text-sm leading-relaxed text-(--app-muted)">{{ message() }}</p>
+  <div appModalFooter class="flex justify-end gap-2.5">
+    <button
+      appButton
+      variant="ghost"
+      [tabFocusable]="true"
+      extraClass="rounded border border-transparent px-3 py-1.5"
+      (click)="secondary.emit()"
+    >
+      {{ secondaryLabel() }}
+    </button>
+    <button appButton [tabFocusable]="true" (click)="primary.emit()">
+      {{ primaryLabel() }}
+    </button>
+  </div>
+</app-modal>

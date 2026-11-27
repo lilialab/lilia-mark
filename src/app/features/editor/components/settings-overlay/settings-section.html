@@ -1,0 +1,21 @@
+<div [class]="divided() ? 'mb-4 border-t border-(--app-border) pt-3' : 'mb-4'">
+  @if (title(); as sectionTitle) {
+    <h3
+      class="text-sm font-medium text-(--app-fg)"
+      [class.mb-2]="!!hint()"
+      [class.mb-3]="!hint()"
+    >
+      {{ sectionTitle }}
+    </h3>
+  }
+  @if (hint(); as sectionHint) {
+    <p
+      class="text-xs text-(--app-muted)"
+      [class.mb-2]="!!title()"
+      [class.mb-4]="!title()"
+    >
+      {{ sectionHint }}
+    </p>
+  }
+  <ng-content />
+</div>

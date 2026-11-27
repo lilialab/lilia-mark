@@ -1,0 +1,79 @@
+<button
+  appButton
+  variant="ghost"
+  extraClass="flex size-8 items-center justify-center"
+  [attr.aria-label]="'menu.aria' | transloco"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="open()"
+  (click)="toggle()"
+>
+  <svg lucideMenu [size]="iconSize" [strokeWidth]="2" aria-hidden="true"></svg>
+</button>
+
+<div
+  role="menu"
+  class="absolute top-full right-0 z-40 mt-1 min-w-40 overflow-hidden rounded-md border border-(--app-border) bg-(--app-bg-raised) py-1 shadow-lg"
+  [class.invisible]="!open()"
+  [class.pointer-events-none]="!open()"
+  [attr.aria-hidden]="!open()"
+>
+  <app-menu-item (click)="editorStore.newUntitled()">
+    <svg
+      lucideFilePlus
+      appMenuItemIcon
+      [size]="iconSize"
+      [strokeWidth]="2"
+      aria-hidden="true"
+    ></svg>
+    {{ 'menu.new' | transloco }}
+  </app-menu-item>
+  <app-menu-item (click)="openFile.emit()">
+    <svg
+      lucideFolderOpen
+      appMenuItemIcon
+      [size]="iconSize"
+      [strokeWidth]="2"
+      aria-hidden="true"
+    ></svg>
+    {{ 'menu.open' | transloco }}
+  </app-menu-item>
+  <app-menu-item (click)="saveAs.emit()">
+    <svg lucideSave appMenuItemIcon [size]="iconSize" [strokeWidth]="2" aria-hidden="true"></svg>
+    {{ 'menu.saveAs' | transloco }}
+  </app-menu-item>
+
+  <div role="separator" class="my-1 border-t border-(--app-border)"></div>
+
+  <app-menu-item (click)="settings.emit()">
+    <svg
+      lucideSettings
+      appMenuItemIcon
+      [size]="iconSize"
+      [strokeWidth]="2"
+      aria-hidden="true"
+    ></svg>
+    {{ 'menu.settings' | transloco }}
+  </app-menu-item>
+
+  <div role="separator" class="my-1 border-t border-(--app-border)"></div>
+
+  <app-menu-item (click)="shortcuts.emit()">
+    <svg
+      lucideKeyboard
+      appMenuItemIcon
+      [size]="iconSize"
+      [strokeWidth]="2"
+      aria-hidden="true"
+    ></svg>
+    {{ 'menu.shortcuts' | transloco }}
+  </app-menu-item>
+  <app-menu-item (click)="cheatSheet.emit()">
+    {{ 'menu.markdownCheatSheet' | transloco }}
+  </app-menu-item>
+  <app-menu-item (click)="startupTiming.emit()">
+    {{ 'menu.startupTiming' | transloco }}
+  </app-menu-item>
+  <app-menu-item (click)="checkUpdate.emit()">
+    {{ 'menu.checkUpdate' | transloco }}
+  </app-menu-item>
+</div>

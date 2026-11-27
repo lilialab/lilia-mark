@@ -60,9 +60,10 @@ pnpm tauri build  # 打安装包
 
 - `pnpm format` — dprint
 - `pnpm lint` — ESLint
-- `pnpm test:run` — Vitest
+- `pnpm test` — Node test runner（tsx）
+- `pnpm start` — Angular 开发服（Tauri dev 会拉起）
 
-技术栈：Tauri 2 · Vite · React · TypeScript · CodeMirror 6 · markdown-it。仓库约定与分层见 [`AGENTS.md`](AGENTS.md)。
+技术栈：Tauri 2 · Angular · TypeScript · CodeMirror 6 · markdown-it。仓库约定与分层见 [`AGENTS.md`](AGENTS.md)。
 
 ## 许可
 

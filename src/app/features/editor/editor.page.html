@@ -1,0 +1,103 @@
+<div class="relative flex h-full min-h-0 w-full flex-col">
+  <app-editor-tab-bar (closeTab)="onCloseTab($event)">
+    <app-menu
+      (openFile)="editorIo.openFile()"
+      (saveAs)="editorIo.saveAs()"
+      (settings)="settingsOpen.set(true)"
+      (shortcuts)="shortcutsOpen.set(true)"
+      (cheatSheet)="cheatSheetOpen.set(true)"
+      (startupTiming)="startupTimingOpen.set(true)"
+      (checkUpdate)="checkForUpdates()"
+    />
+  </app-editor-tab-bar>
+
+  @if (editorStore.activeTab(); as activeTab) {
+    @if (activeTab.diskChange; as diskChange) {
+      <app-disk-change-banner
+        [diskChange]="diskChange"
+        [dirty]="activeTab.dirty"
+        (reload)="editorStore.reloadFromDisk(activeTab.id)"
+        (keepEdits)="editorStore.keepEdits(activeTab.id)"
+      />
+    }
+  }
+
+  <section
+    class="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-(--app-bg)"
+    [attr.aria-label]="'editor.ariaSource' | transloco"
+  >
+    @if (editorSession.ready() && editorStore.tabs().length === 0) {
+      <div class="flex h-full flex-col items-center justify-center gap-2 p-6">
+        <h1 class="text-2xl font-semibold tracking-tight text-(--app-fg)">
+          {{ 'app.name' | transloco }}
+        </h1>
+        <p class="text-sm text-(--app-muted)">{{ 'empty.hint' | transloco: { mod: 'Ctrl' } }}</p>
+      </div>
+    }
+
+    @for (tab of editorStore.tabs(); track tab.id + ':' + tab.docEpoch) {
+      <div
+        class="absolute inset-0 min-h-0 overflow-auto"
+        [class.z-10]="tab.id === editorStore.activeId()"
+        [class.invisible]="tab.id !== editorStore.activeId()"
+        [class.pointer-events-none]="tab.id !== editorStore.activeId()"
+        [attr.aria-hidden]="tab.id !== editorStore.activeId()"
+      >
+        <app-code-editor
+          class="h-full"
+          [tabId]="tab.id"
+          [path]="tab.path"
+          [languagePath]="languagePathFor(tab)"
+          [indentSize]="settingsStore.indentSize()"
+          [busyMessage]="busyMessageFor(tab.id)"
+          (dirty)="onDirty(tab.id)"
+          (caretStatus)="onCaretStatus(tab.id, $event)"
+          (ready)="onReady(tab.id)"
+          (saveRequest)="editorIo.save()"
+          (pathResolved)="onPathResolved(tab.id, $event)"
+          (loadError)="onLoadError(tab.id, $event)"
+          (emptyPaste)="onEmptyPaste(tab.id, $event)"
+        />
+      </div>
+    }
+
+    @if (editorStore.activeTab(); as activeTab) {
+      <app-preview-overlay
+        [open]="previewOpen()"
+        [languagePath]="languagePathFor(activeTab)"
+        [filePath]="activeTab.path"
+        [source]="previewSource()"
+        [openHtml]="openHtmlInBrowserFn"
+      />
+    }
+
+    <app-file-drag-overlay [active]="fileDrag.active()" />
+  </section>
+
+  <app-editor-status-bar />
+
+  <app-settings-overlay [open]="settingsOpen()" (closed)="settingsOpen.set(false)" />
+  <app-shortcuts-overlay [open]="shortcutsOpen()" (closed)="shortcutsOpen.set(false)" />
+  <app-markdown-cheat-sheet-overlay
+    [open]="cheatSheetOpen()"
+    (closed)="cheatSheetOpen.set(false)"
+  />
+  <app-startup-timing-overlay
+    [open]="startupTimingOpen()"
+    (closed)="startupTimingOpen.set(false)"
+  />
+
+  @if (confirmDialog.request(); as req) {
+    <app-confirm-dialog
+      [open]="true"
+      [title]="req.title"
+      [message]="req.message"
+      [primaryLabel]="req.primaryLabel"
+      [secondaryLabel]="req.secondaryLabel"
+      [closeLabel]="req.closeLabel"
+      (primary)="confirmDialog.finish('primary')"
+      (secondary)="confirmDialog.finish('secondary')"
+      (cancelled)="confirmDialog.finish('cancel')"
+    />
+  }
+</div>

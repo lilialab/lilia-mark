@@ -1,22 +1,39 @@
-import { describe, expect, it } from 'vitest';
-import { MAX_FONT_SIZE, MIN_FONT_SIZE, parseFontSizeInput } from '../../src/theme/fonts';
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+
+import { isValidFontSize, MAX_FONT_SIZE, MIN_FONT_SIZE, parseFontSizeInput } from '@/theme/fonts';
+
+describe('isValidFontSize', () => {
+  it('accepts integers in 8–72', () => {
+    assert.equal(isValidFontSize(MIN_FONT_SIZE), true);
+    assert.equal(isValidFontSize(16), true);
+    assert.equal(isValidFontSize(MAX_FONT_SIZE), true);
+  });
+
+  it('rejects non-integer and out of range', () => {
+    assert.equal(isValidFontSize(16.5), false);
+    assert.equal(isValidFontSize(0), false);
+    assert.equal(isValidFontSize(MIN_FONT_SIZE - 1), false);
+    assert.equal(isValidFontSize(MAX_FONT_SIZE + 1), false);
+  });
+});
 
 describe('parseFontSizeInput', () => {
   it('accepts integers in 8–72', () => {
-    expect(parseFontSizeInput(String(MIN_FONT_SIZE))).toBe(MIN_FONT_SIZE);
-    expect(parseFontSizeInput('16')).toBe(16);
-    expect(parseFontSizeInput(' 24 ')).toBe(24);
-    expect(parseFontSizeInput(String(MAX_FONT_SIZE))).toBe(MAX_FONT_SIZE);
+    assert.equal(parseFontSizeInput(String(MIN_FONT_SIZE)), MIN_FONT_SIZE);
+    assert.equal(parseFontSizeInput('16'), 16);
+    assert.equal(parseFontSizeInput(' 24 '), 24);
+    assert.equal(parseFontSizeInput(String(MAX_FONT_SIZE)), MAX_FONT_SIZE);
   });
 
   it('rejects empty, non-integer, and out of range', () => {
-    expect(parseFontSizeInput('')).toBeNull();
-    expect(parseFontSizeInput('   ')).toBeNull();
-    expect(parseFontSizeInput('16.5')).toBeNull();
-    expect(parseFontSizeInput('abc')).toBeNull();
-    expect(parseFontSizeInput('0')).toBeNull();
-    expect(parseFontSizeInput('-8')).toBeNull();
-    expect(parseFontSizeInput(String(MIN_FONT_SIZE - 1))).toBeNull();
-    expect(parseFontSizeInput(String(MAX_FONT_SIZE + 1))).toBeNull();
+    assert.equal(parseFontSizeInput(''), null);
+    assert.equal(parseFontSizeInput('   '), null);
+    assert.equal(parseFontSizeInput('16.5'), null);
+    assert.equal(parseFontSizeInput('abc'), null);
+    assert.equal(parseFontSizeInput('0'), null);
+    assert.equal(parseFontSizeInput('-8'), null);
+    assert.equal(parseFontSizeInput(String(MIN_FONT_SIZE - 1)), null);
+    assert.equal(parseFontSizeInput(String(MAX_FONT_SIZE + 1)), null);
   });
 });

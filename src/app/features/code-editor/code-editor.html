@@ -1,0 +1,18 @@
+<div
+  class="code-editor h-full min-h-0"
+  [attr.inert]="busyMessage() !== null || opening() ? '' : null"
+></div>
+
+@if (busyMessage(); as message) {
+  <div
+    class="absolute inset-0 z-10 flex items-center justify-center bg-(--app-overlay-scrim) text-sm text-(--app-fg)"
+  >
+    {{ message }}
+  </div>
+} @else if (opening()) {
+  <div
+    class="absolute inset-0 z-10 flex items-center justify-center bg-(--app-overlay-scrim) text-sm text-(--app-fg)"
+  >
+    {{ 'editor.busyOpening' | transloco }}
+  </div>
+}

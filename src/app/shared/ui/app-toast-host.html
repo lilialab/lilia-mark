@@ -1,0 +1,74 @@
+@for (item of appToast.items(); track item.id) {
+  <div
+    role="status"
+    class="pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-lg border border-(--app-border) bg-(--app-bg-raised) px-3.5 py-2.5 text-sm text-(--app-fg) shadow-lg"
+  >
+    @switch (item.kind) {
+      @case ('error') {
+        <svg
+          lucideCircleAlert
+          class="mt-0.5 shrink-0 text-(--ctp-red)"
+          [size]="iconSize"
+          [strokeWidth]="2"
+          aria-hidden="true"
+        ></svg>
+      }
+      @case ('warning') {
+        <svg
+          lucideTriangleAlert
+          class="mt-0.5 shrink-0 text-(--ctp-yellow)"
+          [size]="iconSize"
+          [strokeWidth]="2"
+          aria-hidden="true"
+        ></svg>
+      }
+      @case ('success') {
+        <svg
+          lucideCircleCheck
+          class="mt-0.5 shrink-0 text-(--ctp-green)"
+          [size]="iconSize"
+          [strokeWidth]="2"
+          aria-hidden="true"
+        ></svg>
+      }
+      @default {
+        <svg
+          lucideInfo
+          class="mt-0.5 shrink-0 text-(--ctp-blue)"
+          [size]="iconSize"
+          [strokeWidth]="2"
+          aria-hidden="true"
+        ></svg>
+      }
+    }
+
+    <div class="min-w-0 flex-1">
+      <p class="m-0 font-medium leading-snug">{{ item.title }}</p>
+      @if (item.description; as description) {
+        <p class="m-0 mt-0.5 text-(--app-muted) leading-snug break-words">{{ description }}</p>
+      }
+      @if (item.action; as action) {
+        <button
+          appButton
+          variant="ghost"
+          [tabFocusable]="true"
+          extraClass="mt-1.5 px-0 text-sm text-(--app-link) hover:bg-transparent hover:text-(--app-link-hover)"
+          (click)="runAction(item.id, action.run)"
+        >
+          {{ action.label }}
+        </button>
+      }
+    </div>
+
+    <button
+      appButton
+      variant="ghost"
+      [tabFocusable]="true"
+      extraClass="flex size-6 shrink-0 items-center justify-center text-(--app-muted) hover:bg-(--app-surface) hover:text-(--app-fg)"
+      [attr.aria-label]="'dialog.close' | transloco"
+      (click)="appToast.dismiss(item.id)"
+    >
+      <svg lucideX [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+    </button>
+  </div>
+}

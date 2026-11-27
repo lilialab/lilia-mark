@@ -1,0 +1,16 @@
+@if (diskChange() === 'remove') {
+  <p class="min-w-0 flex-1">{{ 'disk.removed' | transloco }}</p>
+} @else if (!dirty()) {
+  <p class="min-w-0 flex-1">{{ 'disk.updated' | transloco }}</p>
+  <button appButton [tabFocusable]="true" (click)="reload.emit()">
+    {{ 'disk.reload' | transloco }}
+  </button>
+} @else {
+  <p class="min-w-0 flex-1">{{ 'disk.conflict' | transloco }}</p>
+  <button appButton [tabFocusable]="true" (click)="keepEdits.emit()">
+    {{ 'disk.keepEdits' | transloco }}
+  </button>
+  <button appButton [tabFocusable]="true" (click)="reload.emit()">
+    {{ 'disk.useDisk' | transloco }}
+  </button>
+}

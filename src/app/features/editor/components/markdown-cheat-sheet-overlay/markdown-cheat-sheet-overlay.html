@@ -1,0 +1,23 @@
+<app-modal
+  [open]="open()"
+  [title]="'cheatSheet.title' | transloco"
+  [closeLabel]="'cheatSheet.close' | transloco"
+  (closed)="closed.emit()"
+>
+  <p class="mb-4 text-xs text-(--app-muted)">{{ 'cheatSheet.hint' | transloco }}</p>
+
+  <dl class="space-y-3">
+    @for (id of ids; track id) {
+      <div>
+        <dt class="mb-1 text-sm text-(--app-fg)">
+          {{ 'cheatSheet.' + id + '.name' | transloco }}
+        </dt>
+        <dd>
+          <pre
+            class="overflow-x-auto whitespace-pre-wrap rounded border border-(--app-border) bg-(--app-bg) px-3 py-2 font-mono text-xs leading-relaxed text-(--app-fg)"
+          >{{ 'cheatSheet.' + id + '.example' | transloco }}</pre>
+        </dd>
+      </div>
+    }
+  </dl>
+</app-modal>

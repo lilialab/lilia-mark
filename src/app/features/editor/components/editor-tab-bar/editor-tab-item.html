@@ -1,0 +1,42 @@
+<button
+  appButton
+  variant="ghost"
+  extraClass="flex min-w-0 flex-1 cursor-pointer items-center gap-1.5 py-1.5 text-left text-(--app-fg) hover:bg-transparent"
+  [class.text-(--app-muted)]="!active()"
+  (click)="$event.stopPropagation(); editorStore.setActive(tab().id)"
+>
+  <span class="min-w-0 truncate">{{ tab().title }}</span>
+  @if (tab().diskChange) {
+    <span
+      class="shrink-0 text-(--app-warn-fg)"
+      [attr.title]="'editor.diskChanged' | transloco"
+    >!</span>
+  }
+</button>
+<button
+  appButton
+  variant="ghost"
+  extraClass="group/close flex size-5 shrink-0 cursor-pointer items-center justify-center hover:bg-transparent"
+  [class.opacity-100]="active() || tab().dirty"
+  [class.opacity-0]="!active() && !tab().dirty"
+  [class.group-hover:opacity-100]="!active() && !tab().dirty"
+  [attr.aria-label]="'editor.closeTab' | transloco: { title: tab().title }"
+  (click)="close($event)"
+  (pointerdown)="$event.stopPropagation()"
+>
+  @if (tab().dirty) {
+    <span
+      class="size-2 rounded-full bg-(--app-fg) group-hover/close:hidden"
+      aria-hidden="true"
+    ></span>
+    <svg
+      lucideX
+      class="hidden size-3.5 group-hover/close:block"
+      [size]="14"
+      [strokeWidth]="2"
+      aria-hidden="true"
+    ></svg>
+  } @else {
+    <svg lucideX [size]="14" [strokeWidth]="2" aria-hidden="true"></svg>
+  }
+</button>

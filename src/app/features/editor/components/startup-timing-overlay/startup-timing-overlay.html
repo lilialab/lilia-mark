@@ -1,0 +1,22 @@
+<app-modal
+  [open]="open()"
+  [title]="'startup.title' | transloco"
+  [closeLabel]="'startup.close' | transloco"
+  (closed)="closed.emit()"
+>
+  <dl class="space-y-2 text-xs">
+    @for (row of rows(); track row.id) {
+      <div class="flex justify-between gap-4">
+        <dt>
+          <div class="font-mono text-(--app-fg)">
+            {{ 'startup.' + row.id + '.label' | transloco }}
+          </div>
+          <div class="text-(--app-muted)">
+            {{ 'startup.' + row.id + '.meaning' | transloco }}
+          </div>
+        </dt>
+        <dd class="shrink-0 font-mono text-(--app-fg)">{{ row.durationMs }}ms</dd>
+      </div>
+    }
+  </dl>
+</app-modal>

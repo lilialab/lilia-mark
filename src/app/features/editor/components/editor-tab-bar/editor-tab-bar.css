@@ -1,0 +1,21 @@
+/* 拖拽中其它标签让位有动画；松手回位 / settling 时不动画（避免冲一下）。 */
+.editor-tab-list.cdk-drop-list-dragging:not(.is-settling)
+  .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 160ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.editor-tab-list .cdk-drag-animating,
+.editor-tab-list.is-settling .cdk-drag {
+  transition: none;
+}
+
+.editor-tab-list .cdk-drag-preview {
+  box-sizing: border-box;
+  opacity: 0.8;
+  background: var(--app-bg);
+  box-shadow: 0 1px 4px color-mix(in oklab, var(--app-fg) 20%, transparent);
+}
+
+.editor-tab-list .cdk-drag-placeholder {
+  opacity: 0;
+}
